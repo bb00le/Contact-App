@@ -1,0 +1,90 @@
+<div class="d-flex p-2 flex-column align-items-center">
+  <form #form="ngForm"  (ngSubmit)="onSubmit(form)" [formGroup]="contactFormGroup" novalidate class="mt-5">
+
+    <input type="hidden" formControlName="contactId">
+
+    <div class="form-row">
+
+      <div class="form-group col-md-6">
+        <label>First Name:</label>
+        <input formControlName="contactFirstName" class="form-control form-control-lg" placeholder="John">
+      </div>
+
+      <div class="form-group col-md-6">
+        <label>Last Name:</label>
+        <input formControlName="contactLastName" class="form-control form-control-lg" placeholder="Smith">
+      </div>
+
+    </div>
+
+    <div class="form-row">
+
+      <div class="form-group col-md-6">
+        <label>Address:</label>
+        <input formControlName="contactAdress" class="form-control form-control-lg" placeholder="City, Street, House no.">
+      </div>
+
+      <div class="form-group col-md-6">
+        <label>Workplace:</label>
+        <input formControlName="contactWorkInfo" class="form-control form-control-lg" placeholder="HR Cloud">
+      </div>
+
+    </div>
+
+
+    <div formArrayName="contactPhones" class="form-group">
+      <label>Phone number:</label>
+
+      <div formGroupName="{{i}}" class="input-group mb-3" *ngFor="let phoneObj of contactFormGroup.controls['contactPhones'].controls; let i=index">
+        <input type="hidden" formControlName="phoneId">
+        <input formControlName="phone" class="form-control form-control-lg" placeholder="XXX/XXX-XXXX">
+        <div class="input-group-append">
+          <button type="button" (click)="addPhones()" class="btn btn-primary"><i class="bi bi-plus-circle"></i></button>
+          <button type="button" (click)="removePhone(i)" class="btn btn-danger"><i class="bi bi-dash-circle"></i></button>
+        </div>
+      </div>
+
+    </div>
+
+    <div formArrayName="contactEmails" class="form-group">
+      <label>Email:</label>
+      <div formGroupName="{{e}}" *ngFor="let emailObj of contactFormGroup.controls['contactEmails'].controls; let e=index">
+        <div class="input-group mb-3">
+          <input type="hidden" formControlName="emailId">
+          <input type="email" formControlName="email" class="form-control form-control-lg" placeholder="JohnSmith@hrcloud.com">
+          <div class="input-group-append">
+            <button type="button" (click)="addEmails()" class="btn btn-primary"><i class="bi bi-plus-circle"></i></button>
+            <button type="button" (click)="removeEmail(e)" class="btn btn-danger"><i class="bi bi-dash-circle"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="form-group">
+      <label>Date of birth:</label>
+
+      <input formControlName="contactDateOfBirth" class="form-control form-control-lg" placeholder="DD/MM/YYYY">
+    </div>
+
+
+    <div formArrayName="contactTags" class="form-group">
+      <label>Tag:</label>
+      <div formGroupName="{{t}}" *ngFor="let tagObj of contactFormGroup.controls['contactTags'].controls; let t=index">
+        <div class="input-group mb-3">
+          <input type="hidden" formControlName="tagId">
+          <input formControlName="tag" class="form-control form-control-lg" placeholder="Friend">
+          <div class="input-group-append">
+            <button type="button" (click)="addTags()" class="btn btn-primary"><i class="bi bi-plus-circle"></i></button>
+            <button type="button" (click)="removeTag(t)" class="btn btn-danger"><i class="bi bi-dash-circle"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <button type="submit" class="btn btn-md btn-primary col-sm-6"><i class="bi bi-pencil-square"></i> Save</button>
+      <button type="button" [routerLink]="''" class="btn btn-md btn-secondary col-sm-6"><i class="bi bi-x-octagon"></i> Cancel</button>
+    </div>
+  </form>
+</div>

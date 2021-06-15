@@ -1,0 +1,74 @@
+<div class="container d-flex flex-column align-items-center">
+
+
+  <form #form="ngForm" (ngSubmit)="onSubmit(form)" [formGroup]="contactFormGroup" novalidate class="form w-75 mt-5">
+
+    <input type="hidden" formControlName="contactId">
+
+    <div class="form-row">
+
+      <div class="form-group col">
+        <label>First Name:</label>
+        <input formControlName="contactFirstName" readonly class="form-control-plaintext form-control-lg" placeholder="None">
+      </div>
+
+      <div class="form-group col">
+        <label>Last Name:</label>
+        <input formControlName="contactLastName" readonly class="form-control-plaintext form-control-lg" placeholder="None">
+      </div>
+
+    </div>
+
+    <div class="form-row">
+      <div class="form-group col">
+        <label>Address:</label>
+        <input formControlName="contactAdress" readonly class="form-control-plaintext form-control-lg" placeholder="None">
+      </div>
+
+      <div class="form-group col">
+        <label>Work Info:</label>
+        <input formControlName="contactWorkInfo" readonly class="form-control-plaintext form-control-lg" placeholder="None">
+      </div>
+    </div>
+
+
+
+    <div class="form-row">
+      <div formArrayName="contactPhones" class="col">
+        <label>Phone number:</label>
+        <div formGroupName="{{i}}" *ngFor="let phoneObj of contactFormGroup.controls['contactPhones'].controls; let i=index" class="form-group">
+          <input formControlName="phone" readonly class="form-control-plaintext form-control-lg" placeholder="None">
+        </div>
+      </div>
+      <div formArrayName="contactEmails" class="col">
+        <label>Email:</label>
+        <div formGroupName="{{e}}" *ngFor="let emailObj of contactFormGroup.controls['contactEmails'].controls; let e=index" class="form-group">
+          <input type="email" formControlName="email" readonly class="form-control-plaintext form-control-lg" placeholder="None">
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+    <div class="form-group form-row">
+      <label>Date of birth:</label>
+      <input formControlName="contactDateOfBirth" readonly class="form-control-plaintext form-control-lg" placeholder="None">
+    </div>
+
+
+    <div formArrayName="contactTags">
+      <label>Tag:</label>
+      <div formGroupName="{{t}}" *ngFor="let tagObj of contactFormGroup.controls['contactTags'].controls; let t=index" class="form-group form-row">
+        <input formControlName="tag" readonly class="form-control-plaintext form-control-lg" placeholder="None">
+      </div>
+    </div>
+  </form>
+  <div class="row">
+    <button type="button" [routerLink]="''" class="btn btn-md btn-secondary"><i class="bi bi-arrow-return-left"></i> Back</button>
+  </div>
+</div>
+
+
+

@@ -1,0 +1,76 @@
+<div class="container-fluid">
+
+  <div class="row">
+    <div class="col d-flex justify-content-center">
+      <select [(ngModel)]="searchOption" class="form-select-md h-50">
+        <option selected>Search by ...</option>
+        <option value="FirstName">First Name</option>
+        <option value="LastName">Last Name</option>
+        <option value="Tag">Tags</option>
+      </select>
+      <input type="text" [(ngModel)]="searchText" class="form-control-md h-50">
+      <button (click)="searchContacts()" class="btn btn-md btn-primary h-50">Search</button>
+    </div>
+    <div class="col d-flex justify-content-center"><button [routerLink]="'/add-contact'" class="btn btn-md m-3 btn-primary"><i class="bi bi-plus-circle"></i> Add contact</button></div>
+  </div>
+
+  <div class="row justify-content-center w-auto">
+    <table class="table w-auto">
+      <thead>
+        <tr>
+          <th>Firstname</th>
+          <th>Lastname</th>
+          <th>Address</th>
+          <th>Phone numbers</th>
+          <th>Emails</th>
+          <th>Workplace</th>
+          <th>Date of birth</th>
+          <th>Tags</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let contact of contactList">
+          <td class="d-none">{{contact.contactId}}</td>
+          <td><span>{{contact.contactFirstName}}</span></td>
+          <td><span>{{contact.contactLastName}}</span></td>
+          <td><span>{{contact.contactAdress}}</span></td>
+
+          <td>
+            <ul>
+              <li *ngFor="let phone of contact.contactPhones">{{phone.phone}}</li>
+            </ul>
+          </td>
+
+          <td>
+            <ul>
+              <li *ngFor="let email of contact.contactEmails">{{email.email}}</li>
+            </ul>
+          </td>
+
+          <td><span>{{contact.contactWorkInfo}}</span></td>
+          <td><span>{{contact.contactDateOfBirth}}</span></td>
+          <td>
+            <ul>
+              <li *ngFor="let tag of contact.contactTags">{{tag.tag}}</li>
+            </ul>
+          </td>
+          <td>
+            <div class="w-auto">
+              <span>
+                <button [routerLink]="contact.contactId" class="btn btn-info w-100"><i class="bi bi-info-circle"></i> Info</button>
+              </span>
+              <span>
+                <button [routerLink]="'edit-contact/'+contact.contactId" class="btn btn-primary w-100"><i class="bi bi-pencil-square"></i> Edit</button>
+              </span>
+              <span>
+                <button (click)="deleteContact(contact.contactId)" class="btn btn-danger w-100"><i class="bi bi-trash"></i> Delete</button>
+              </span>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+

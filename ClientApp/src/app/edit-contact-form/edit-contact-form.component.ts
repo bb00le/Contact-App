@@ -1,0 +1,186 @@
+import { Component, OnInit } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, NgForm } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ContactList } from '../shared/contact-list.model';
+import { ContactListService } from '../shared/contact-list.service';
+import { ToastService } from '../shared/toast.service';
+
+@Component({
+  selector: 'app-edit-contact-form',
+  templateUrl: './edit-contact-form.component.html',
+})
+export class EditContactFormComponent implements OnInit {
+
+  contact: ContactList;
+  contactFormGroup: FormGroup;
+  contactEmails: FormArray;
+  contactPhones: FormArray;
+  contactTags: FormArray;
+
+
+  constructor(public service: ContactListService, private fb: FormBuilder, private router: Router, private route: ActivatedRoute, private toast: ToastService) {
+    let id: number = +this.route.snapshot.paramMap.get('id');
+    this.getEditContact(id);
+    this.initFormGroup(this.contactFormGroup);
+  }
+
+  assignFormGroup() {
+    this.contactFormGroup.patchValue({
+      contactId: this.contact.contactId,
+      contactFirstName: this.contact.contactFirstName,
+      contactLastName: this.contact.contactLastName,
+      contactAdress: this.contact.contactAdress,
+      contactWorkInfo: this.contact.contactWorkInfo,
+      contactDateOfBirth: this.contact.contactDateOfBirth,
+    });
+    this.contactEmails = this.contactFormGroup.get('contactEmails') as FormArray;
+    this.contact.contactEmails.forEach(email => this.contactEmails.push(this.fb.group(email)));
+
+    this.contactPhones = this.contactFormGroup.get('contactPhones') as FormArray;
+    this.contact.contactPhones.forEach(phone => this.contactPhones.push(this.fb.group(phone)));
+
+    this.contactTags = this.contactFormGroup.get('contactTags') as FormArray;
+    this.contact.contactTags.forEach(tag => this.contactTags.push(this.fb.group(tag)));
+  }
+
+  initFormGroup(contactFormGroup: any) {
+    this.contactFormGroup = this.fb.group({
+      contactId: 0,
+      contactFirstName: '',
+      contactLastName: '',
+      contactAdress: '',
+      contactWorkInfo: '',
+      contactDateOfBirth: '',
+      contactEmails: this.fb.array([]),
+      contactPhones: this.fb.array([]),
+      contactTags: this.fb.array([]),
+    });
+  }
+
+  ngOnInit() {
+    
+  }
+
+  createEmails(): FormGroup {
+    return this.fb.group({ emailId: 0, email: "", contactId: 0 });
+  }
+  createPhones(): FormGroup {
+    return this.fb.group({ phoneId: 0, phone: "", contactId: 0 });
+  }
+  createTags(): FormGroup {
+    return this.fb.group({ tagId: 0, tag: "", contactId: 0 });
+  }
+
+  addEmails() {
+    this.contactEmails = this.contactFormGroup.get('contactEmails') as FormArray;
+    this.contactEmails.push(this.createEmails());
+  }
+  addPhones() {
+    this.contactPhones = this.contactFormGroup.get('contactPhones') as FormArray;
+    this.contactPhones.push(this.createPhones());
+
+  }
+  addTags() {
+    this.contactTags = this.contactFormGroup.get('contactTags') as FormArray;
+    this.contactTags.push(this.createTags());
+  }
+
+  removePhone(index: number) {
+    this.contactPhones = this.contactFormGroup.get('contactPhones') as FormArray;
+
+    const id:number = this.contactPhones.at(index).get('phoneId').value as number;
+
+    if (id == 0) {
+      this.contactPhones.removeAt(index);
+    }
+    else {
+      this.service.deletePhone(id).subscribe(
+        res => {
+          this.contactPhones.removeAt(index);
+          this.toast.show('Phone number removed', { classname: 'bg-success text-light' });
+        },
+        err => {
+          console.log(err);
+          this.toast.show('Error attempting to delete phone number', { classname: 'bg-warning text-light' });
+        }
+      );
+    }
+    
+  }
+
+  removeEmail(index: number) {
+    this.contactEmails = this.contactFormGroup.get('contactEmails') as FormArray;
+
+    const id: number = this.contactEmails.at(index).get('emailId').value as number;
+
+    if (id == 0) {
+      this.contactEmails.removeAt(index);
+    }
+    else {
+      this.service.deleteEmail(id).subscribe(
+        res => {
+          this.contactEmails.removeAt(index);
+          this.toast.show('Email removed', { classname: 'bg-success text-light' });
+        },
+        err => {
+          console.log(err);
+          this.toast.show('Error attempting to delete email', { classname: 'bg-warning text-light' });
+        }
+      );
+    }
+  }
+
+  removeTag(index: number) {
+    this.contactTags = this.contactFormGroup.get('contactTags') as FormArray;
+
+    const id: number = this.contactTags.at(index).get('tagId').value as number;
+
+    if (id == 0) {
+      this.contactTags.removeAt(index);
+    }
+    else {
+      this.service.deleteTag(id).subscribe(
+        res => {
+          this.contactTags.removeAt(index);
+          this.toast.show('Tag removed', { classname: 'bg-success text-light' });
+        },
+        err => {
+          console.log(err);
+          this.toast.show('Error attempting to delete tag', { classname: 'bg-warning text-light' });
+        }
+      );
+    } 
+  }
+
+  getEditContact(id:number) {
+
+    this.service.getContact(id).subscribe(
+      res => {
+        this.contact = res;
+        this.assignFormGroup();
+        
+      },
+      err => {
+        console.log(err);
+        this.toast.show('Error attempting to get contact information', { classname: 'bg-warning text-light' });
+      }
+    );
+
+  }
+
+  onSubmit(form: NgForm) {
+    this.service.putContactUpdate(form.value).subscribe(
+      res => {
+        this.toast.show('Updated contact', { classname: 'bg-success text-light' });
+        this.router.navigate([''])
+      },
+      err => {
+        console.log(err);
+        this.toast.show('Error attempting to update contact', { classname: 'bg-warning text-light' });
+      }
+    );
+  }
+
+}
+
+
